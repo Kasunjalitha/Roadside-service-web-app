@@ -39,5 +39,5 @@ jobs:
       env:
         IMAGE_TAG: ${{github.sha}}
       run: |
-        docker build -t docker.io/${{secrets.SAFA_DH_USERNAME}}/service-provider-dispatcher-service:${IMAGE_TAG} ./notification-service/
+        docker build -t docker.io/${{secrets.SAFA_DH_USERNAME}}/service-provider-dispatcher-service:${IMAGE_TAG} ./service-provider-dispatcher-service/
         docker push docker.io/${{secrets.SAFA_DH_USERNAME}}/service-provider-dispatcher-service:${IMAGE_TAG}
