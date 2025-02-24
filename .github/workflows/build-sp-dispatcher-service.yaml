@@ -18,19 +18,26 @@ jobs:
         
     - name: Restore dependencies
       run: dotnet restore
-      working-directory: ./request-service
+      working-directory: ./service-provider-dispatcher-service
       
     - name: Build
       run: dotnet build --no-restore
-      working-directory: ./request-service
+      working-directory: ./service-provider-dispatcher-service
       
     - name: Test
       run: dotnet test --no-build --verbosity normal
-      working-directory: ./request-service
+      working-directory: ./service-provider-dispatcher-service
 
-    - name: Build Docker Image
+    - name: Docker Login
+      uses: docker/login-action@v3.3.0
+      with:
+        username: ${{secrets.SAFA_DH_USERNAME}}
+        password: ${{secrets.SAFA_DH_PASSWORD}}
+        logout: true
+
+    - name: Build & Push Docker Image
       env:
         IMAGE_TAG: ${{github.sha}}
       run: |
-        cd ./request-service  # Hardcoded Dockerfile directory
-        docker build -t local-image:request-service .
+        docker build -t docker.io/${{secrets.SAFA_DH_USERNAME}}/service-provider-dispatcher-service:${IMAGE_TAG} ./notification-service/
+        docker push docker.io/${{secrets.SAFA_DH_USERNAME}}/service-provider-dispatcher-service:${IMAGE_TAG}
