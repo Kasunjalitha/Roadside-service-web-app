@@ -40,4 +40,4 @@ jobs:
         IMAGE_TAG: ${{github.sha}}
       run: |
         docker build -t docker.io/${{secrets.SAFA_DH_USERNAME}}/notification-service:${IMAGE_TAG} ./notification-service/
-        docker push docker.io/${{secrets.SAFA_DH_PASSWORD}}/notification-service:${IMAGE_TAG}
+        docker push docker.io/${{secrets.SAFA_DH_USERNAME}}/notification-service:${IMAGE_TAG}
