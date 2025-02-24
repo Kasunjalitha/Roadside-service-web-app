@@ -3,7 +3,8 @@ services:
   # --------------------------------------------------------------
   notification-service:
     container_name: notification-service
-    build: ./notification-service
+    image: safaalaloosi/notification-service:f5732b784ccb6af4bbfab02ccee5adc90849f287
+    #build: ./notification-service
     ports:
       - "8070:8080"
     depends_on:
@@ -26,7 +27,8 @@ services:
   # --------------------------------------------------------------
   request-service:
     container_name: request-service
-    build: ./request-service
+    image: safaalaloosi/request-service:latest
+    #build: ./request-service
     ports:
       - "8071:8080"
     depends_on:
@@ -59,7 +61,8 @@ services:
   # --------------------------------------------------------------
   service-dispatcher-service:
     container_name: service-dispatcher-service
-    build: ./service-provider-dispatcher-service
+    image: safaalaloosi/service-provider-dispatcher-service:f5732b784ccb6af4bbfab02ccee5adc90849f287
+    #build: ./service-provider-dispatcher-service
     ports:
       - "8072:8080"
     depends_on:

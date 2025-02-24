@@ -45,13 +45,12 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();   
-    app.UseSwaggerUI();
-}
+app.UseSwagger();   
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
+
+app.MapGet("/api/requests/health", () => Results.Ok("healthy"));
 
 app.MapPost("/api/requests", async (IRequestService requestService, [FromBody] CreateRequestDto request) =>
 {
