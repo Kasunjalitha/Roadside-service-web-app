@@ -10,6 +10,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+      with:
+        driver: docker-container # Use the docker-container driver for multi-platform builds
     
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
@@ -35,9 +40,12 @@ jobs:
         password: ${{secrets.SAFA_DH_PASSWORD}}
         logout: true
 
-    - name: Build & Push Docker Image
-      env:
-        IMAGE_TAG: ${{github.sha}}
-      run: |
-        docker build -t docker.io/${{secrets.SAFA_DH_USERNAME}}/notification-service:${IMAGE_TAG} ./notification-service/
-        docker push docker.io/${{secrets.SAFA_DH_USERNAME}}/notification-service:${IMAGE_TAG}
+    - name: Build and Push Docker Image
+      uses: docker/build-push-action@v4
+      with:
+        context: ./notification-service/ # Path to the Docker build context
+        platforms: linux/amd64,linux/arm64 # Target platforms
+        push: true # Push the image to Docker Hub
+        tags: |
+          docker.io/${{ secrets.SAFA_DH_USERNAME }}/notification-service:${{ github.sha }}
+          docker.io/${{ secrets.SAFA_DH_USERNAME }}/notification-service:latest
