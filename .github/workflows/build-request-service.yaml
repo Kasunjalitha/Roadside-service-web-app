@@ -35,9 +35,12 @@ jobs:
         password: ${{secrets.SAFA_DH_PASSWORD}}
         logout: true
 
-    - name: Build & Push Docker Image
-      env:
-        IMAGE_TAG: ${{github.sha}}
-      run: |
-        docker build -t docker.io/${{secrets.SAFA_DH_USERNAME}}/request-service:${IMAGE_TAG} ./request-service/
-        docker push docker.io/${{secrets.SAFA_DH_USERNAME}}/request-service:${IMAGE_TAG}
+    - name: Build and Push Docker Image
+      uses: docker/build-push-action@v4
+      with:
+        context: ./request-service/ # Path to the Docker build context
+        platforms: linux/amd64,linux/arm64 # Target platforms
+        push: true # Push the image to Docker Hub
+        tags: |
+          docker.io/${{ secrets.SAFA_DH_USERNAME }}/request-service:${{ github.sha }}
+          docker.io/${{ secrets.SAFA_DH_USERNAME }}/request-service:latest
