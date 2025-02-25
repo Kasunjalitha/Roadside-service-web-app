@@ -1,9 +1,9 @@
 services:
   # NOTIFICATION MICROSERVICE
-  # --------------------------------------------------------------
+  # -------------------------------------------------------------
   notification-service:
     container_name: notification-service
-    image: safaalaloosi/notification-service:f5732b784ccb6af4bbfab02ccee5adc90849f287
+    image: safaalaloosi/notification-service:latest
     #build: ./notification-service
     ports:
       - "8070:8080"
@@ -24,7 +24,7 @@ services:
 
 
   # REQUEST MICROSERVICE
-  # --------------------------------------------------------------
+  # -------------------------------------------------------------
   request-service:
     container_name: request-service
     image: safaalaloosi/request-service:latest
@@ -58,10 +58,10 @@ services:
 
   
   # SERVICE-DISPATCHER MICROSERVICE
-  # --------------------------------------------------------------
+  # -------------------------------------------------------------
   service-dispatcher-service:
     container_name: service-dispatcher-service
-    image: safaalaloosi/service-provider-dispatcher-service:f5732b784ccb6af4bbfab02ccee5adc90849f287
+    image: safaalaloosi/service-provider-dispatcher-service:latest
     #build: ./service-provider-dispatcher-service
     ports:
       - "8072:8080"
