@@ -13,9 +13,15 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+var dbHost = Environment.GetEnvironmentVariable("DB_HOST");
+var dbPort = Environment.GetEnvironmentVariable("DB_PORT");
+var dbUser = Environment.GetEnvironmentVariable("DB_USER");
+var dbPassword = Environment.GetEnvironmentVariable("DB_PASSWORD");
+var dbName = Environment.GetEnvironmentVariable("DB_NAME");
+
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(
-        "Host=localhost;Port=5430;Username=admin;Password=admin;Database=notification-service-db"
+        $"Host={dbHost};Port={dbPort};Username={dbUser};Password={dbPassword};Database={dbName}"
     )
 );
 
