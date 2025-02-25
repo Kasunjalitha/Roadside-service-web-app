@@ -13,9 +13,15 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<ServiceDispatcher>();
 
+var dbHost = Environment.GetEnvironmentVariable("DB_HOST");
+var dbPort = Environment.GetEnvironmentVariable("DB_PORT");
+var dbUser = Environment.GetEnvironmentVariable("DB_USER");
+var dbPassword = Environment.GetEnvironmentVariable("DB_PASSWORD");
+var dbName = Environment.GetEnvironmentVariable("DB_NAME");
+
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(
-        "Host=localhost;Port=5431;Username=admin;Password=admin;Database=service-dispatcher-db"
+        $"Host={dbHost};Port={dbPort};Username={dbUser};Password={dbPassword};Database={dbName}"
     )
 );
 
@@ -90,6 +96,19 @@ app.MapPost("/api/serviceprovider", async (
     dbContext.ServiceProviders.Add(serviceProvider);
     await dbContext.SaveChangesAsync();
     return Results.Created();
+});
+
+app.MapGet("/api/serviceprovider/assignments", async (AppDbContext dbContext) =>
+{
+    try
+    {
+        var assignments = await dbContext.Assignments.ToListAsync();
+        return Results.Ok(assignments);
+    }
+    catch (Exception e)
+    {
+        return Results.Problem();
+    }
 });
 
 app.Run();
