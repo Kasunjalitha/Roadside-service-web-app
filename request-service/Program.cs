@@ -17,6 +17,8 @@ var dbPort = Environment.GetEnvironmentVariable("DB_PORT");
 var dbUser = Environment.GetEnvironmentVariable("DB_USER");
 var dbPassword = Environment.GetEnvironmentVariable("DB_PASSWORD");
 var dbName = Environment.GetEnvironmentVariable("DB_NAME");
+var mqHost = Environment.GetEnvironmentVariable("MQ_HOST");
+var mqPort = Environment.GetEnvironmentVariable("MQ_PORT");
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(
@@ -29,7 +31,7 @@ builder.Services.AddMassTransit(configure =>
     configure.AddConsumers(typeof(Program).Assembly);
     configure.UsingRabbitMq((context, cfg) =>
     {
-        cfg.Host(new Uri("amqp://localhost:5672"), h =>
+        cfg.Host(new Uri($"amqp://{mqHost}:{mqPort}"), h =>
         {
             h.Username("guest");
             h.Password("guest");
