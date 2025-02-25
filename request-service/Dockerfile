@@ -17,4 +17,4 @@ WORKDIR /App
 COPY --from=build-env /App/out .
 EXPOSE 8080
 EXPOSE 8081
-ENTRYPOINT ["dotnet", "request_service.dll"]
+ENTRYPOINT ["dotnet", "request-service.dll"]
