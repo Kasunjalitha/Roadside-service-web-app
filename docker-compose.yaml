@@ -4,15 +4,23 @@ services:
   notification-service:
     container_name: notification-service
     image: safaalaloosi/notification-service:latest
-    #build: ./notification-service
     ports:
       - "8070:8080"
+    environment:
+      - "DB_HOST=notification-service-postgres"
+      - "DB_PORT=5432"
+      - "DB_USER=admin"
+      - "DB_PASSWORD=admin"
+      - "DB_NAME=notification-service-db"
+      - "MQ_HOST=rabbitmq"
+      - "MQ_PORT=5672"
+    restart: always
     depends_on:
       - notification-service-postgres
       - rabbitmq
 
   notification-service-postgres:
-    container_name: notificatoin-service-db
+    container_name: notification-service-db
     image: postgres:latest
     ports:
       - "5430:5432"
@@ -28,9 +36,17 @@ services:
   request-service:
     container_name: request-service
     image: safaalaloosi/request-service:latest
-    #build: ./request-service
     ports:
       - "8071:8080"
+    environment:
+      - "DB_HOST=request-service-postgres"
+      - "DB_PORT=5432"
+      - "DB_USER=admin"
+      - "DB_PASSWORD=admin"
+      - "DB_NAME=request-service-db"
+      - "MQ_HOST=rabbitmq"
+      - "MQ_PORT=5672"
+    restart: always
     depends_on:
       - request-service-postgres
       - rabbitmq
@@ -39,13 +55,48 @@ services:
     container_name: request-service-db
     image: postgres:latest
     ports:
-      - "5432:5432"
+      - "5431:5432"
     volumes:
       - "./docker-volumes/req-postgres:/var/lib/postgresql/data"
     environment:
       - "POSTGRES_USER=admin"
       - "POSTGRES_PASSWORD=admin"
-   
+
+  
+  # SERVICE-DISPATCHER MICROSERVICE
+  # -------------------------------------------------------------
+  service-dispatcher-service:
+    container_name: service-dispatcher-service
+    image: safaalaloosi/service-provider-dispatcher-service:latest
+    ports:
+      - "8072:8080"
+    environment:
+      - "DB_HOST=service-dispatcher-postgres"
+      - "DB_PORT=5432"
+      - "DB_USER=admin"
+      - "DB_PASSWORD=admin"
+      - "DB_NAME=service-dispatcher-db"
+      - "MQ_HOST=rabbitmq"
+      - "MQ_PORT=5672"
+    restart: always
+    depends_on:
+      - service-dispatcher-postgres
+      - rabbitmq
+
+  service-dispatcher-postgres:
+    container_name: service-dispatcher-db
+    image: postgres:latest
+    ports:
+      - "5433:5432"
+    volumes:
+      - "./docker-volumes/sd-postgres:/var/lib/postgresql/data"
+    environment:
+      - "POSTGRES_USER=admin"
+      - "POSTGRES_PASSWORD=admin"
+
+
+  # COMMON SERVICES
+  # --------------------------------------------------------------
   rabbitmq:
     container_name: rabbitmq
     image: rabbitmq:3-management
@@ -56,33 +107,6 @@ services:
       - "./docker-volumes/rabbitmq/data/:/var/lib/rabbitmq/"
       - "./docker-volumes/rabbitmq/log/:/var/log/rabbitmq"
 
-  
-  # SERVICE-DISPATCHER MICROSERVICE
-  # -------------------------------------------------------------
-  service-dispatcher-service:
-    container_name: service-dispatcher-service
-    image: safaalaloosi/service-provider-dispatcher-service:latest
-    #build: ./service-provider-dispatcher-service
-    ports:
-      - "8072:8080"
-    depends_on:
-      - service-dispatcher-postgres
-      - rabbitmq
-
-  service-dispatcher-postgres:
-    container_name: service-dispatcher-db
-    image: postgres:latest
-    ports:
-      - "5431:5432"
-    volumes:
-      - "./docker-volumes/sd-postgres:/var/lib/postgresql/data"
-    environment:
-      - "POSTGRES_USER=admin"
-      - "POSTGRES_PASSWORD=admin"
-
-
-  # COMMON SERVICES
-  # --------------------------------------------------------------
   postgres_admin_portal:
     container_name: pgadmin
     image: dpage/pgadmin4
